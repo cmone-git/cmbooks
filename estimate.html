@@ -6,15 +6,11 @@
     <title>Estimate | CMBooks</title>
 
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#10b981"> <!-- Emerald Green -->
+    <meta name="theme-color" content="#10b981">
 
-    <!-- Google Fonts: Plus Jakarta Sans -->
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
-    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- HTML2PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <script>
@@ -30,8 +26,8 @@
                             200: '#a7f3d0',
                             300: '#6ee7b7',
                             400: '#34d399',
-                            500: '#10b981', // Main Emerald
-                            600: '#059669', // Darker Emerald
+                            500: '#10b981', 
+                            600: '#059669', 
                             700: '#047857',
                             800: '#065f46',
                             900: '#064e3b',
@@ -45,7 +41,6 @@
         }
     </script>
     <style>
-        /* FORCING ALL CORNERS TO BE SQUARE AS REQUESTED */
         * { -webkit-tap-highlight-color: transparent; border-radius: 0 !important; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
@@ -56,33 +51,72 @@
         .hide-text { opacity: 0; width: 0; overflow: hidden; white-space: nowrap; margin-left: 0 !important; }
         .show-text { opacity: 1; width: auto; white-space: nowrap; margin-left: 0.75rem !important; }
 
-        /* A4 Professional Template Styling */
+        /* --- PREMIUM A4 DOCUMENT STYLING --- */
         .a4-wrapper {
             width: 210mm;
             min-height: 297mm;
-            background: white;
-            padding: 20mm;
+            background: #ffffff;
+            padding: 25mm 20mm; /* Professional standard margins */
             margin: 0 auto;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            color: #1f2937;
+            color: #0f172a;
             font-family: '"Plus Jakarta Sans"', sans-serif;
             box-sizing: border-box;
             position: relative;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
-        
-        #estimate-document { background-color: white !important; }
-        
-        .est-table { width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px;}
-        .est-table th { background: #ecfdf5; padding: 12px 16px; text-align: left; border-top: 2px solid #10b981; border-bottom: 2px solid #10b981; color: #065f46; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px;}
-        .est-table td { padding: 12px 16px; border-bottom: 1px solid #e5e7eb; font-size: 14px; font-weight: 400; color: #374151;}
-        .est-totals { width: 50%; margin-left: auto; border-collapse: collapse; margin-bottom: 20px;}
-        .est-totals td { padding: 10px 16px; font-size: 14px;}
+
+        #estimate-document { background-color: #ffffff !important; }
+
+        /* Premium Table Styling */
+        .est-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin: 30px 0;
+        }
+        .est-table th { 
+            padding: 12px 16px; 
+            text-align: left; 
+            border-bottom: 2px solid #10b981; /* Brand color accent */
+            color: #64748b; 
+            font-weight: 700; 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.1em;
+        }
+        .est-table td { 
+            padding: 16px; 
+            border-bottom: 1px solid #f1f5f9; 
+            font-size: 13px; 
+            font-weight: 500; 
+            color: #334155;
+        }
+        .est-table tfoot td {
+            border-top: 2px solid #e2e8f0;
+            border-bottom: none;
+            padding-top: 20px;
+        }
+
+        /* Document Footer */
+        .pdf-footer {
+            position: absolute;
+            bottom: 15mm;
+            left: 20mm;
+            right: 20mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid #f1f5f9;
+            padding-top: 8px;
+            font-size: 8px;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
     </style>
 </head>
 
 <body class="bg-surface dark:bg-dark text-gray-800 dark:text-gray-100 font-sans transition-colors selection:bg-brand-500 selection:text-white flex h-screen overflow-hidden">
 
-    <!-- Global Datalists -->
     <datalist id="clientDatalist"></datalist>
     <datalist id="servicesList">
         <option value="GST Registration">
@@ -101,7 +135,6 @@
         <option value="Digital Signature Certificate (DSC)">
     </datalist>
 
-    <!-- Sidebar -->
     <aside id="sidebar" class="sidebar-transition fixed inset-y-0 left-0 z-50 w-64 bg-white dark:bg-grayDark border-r border-gray-200 dark:border-gray-800 transform -translate-x-full lg:relative lg:translate-x-0 flex flex-col">
         <div class="h-16 flex items-center px-4 border-b border-gray-200 dark:border-gray-800 overflow-hidden shrink-0">
             <div class="flex items-center flex-shrink-0">
@@ -127,16 +160,13 @@
                 <i class="fa-solid fa-file-signature w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Letterhead</span>
             </a>
             
-            <!-- Active State -->
             <button class="w-full flex items-center px-3 py-2.5 bg-brand-600 text-white font-semibold transition-colors group">
                 <i class="fa-solid fa-calculator w-5 text-center flex-shrink-0"></i><span class="sidebar-text show-text ml-3">Estimate Maker</span>
             </button>
         </nav>
     </aside>
 
-    <!-- Main Content Area -->
     <div class="flex-1 flex flex-col h-screen overflow-hidden bg-surface dark:bg-dark">
-        <!-- Top Header -->
         <header class="h-16 bg-white dark:bg-grayDark border-b border-gray-200 dark:border-gray-800 flex items-center justify-between px-4 sm:px-6 lg:px-8 shrink-0">
             <div class="flex items-center gap-3 lg:hidden">
                 <button onclick="document.getElementById('sidebar').classList.toggle('-translate-x-full');" class="p-2 -ml-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -158,10 +188,8 @@
             </div>
         </header>
 
-        <!-- Split Screen Main Area -->
         <main class="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 flex flex-col lg:flex-row gap-6">
             
-            <!-- LEFT: Form Input -->
             <div class="w-full lg:w-1/3 flex flex-col gap-6">
                 <div class="bg-white dark:bg-grayDark p-6 border border-gray-300 dark:border-gray-700 relative overflow-hidden flex-shrink-0">
                     <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-5 border-b border-gray-200 dark:border-gray-700 pb-3 flex items-center gap-2">
@@ -169,7 +197,6 @@
                     </h2>
 
                     <div class="space-y-4 relative z-10">
-                        <!-- Invoice Meta -->
                         <div class="grid grid-cols-2 gap-4">
                             <div>
                                 <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Estimate Number</label>
@@ -184,14 +211,12 @@
                             </div>
                         </div>
 
-                        <!-- Client Search -->
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Search Client</label>
                             <input type="text" list="clientDatalist" id="form_client_search" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark focus:border-brand-500 text-sm font-medium transition-colors outline-none" placeholder="Type to select client..." onchange="handleClientSelection(this); updatePreview()">
                             <input type="hidden" id="form_client_name">
                         </div>
                         
-                        <!-- Client Contact -->
                         <div class="grid grid-cols-2 gap-4">
                             <div class="col-span-2">
                                 <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Client Mobile No</label>
@@ -203,7 +228,6 @@
                             </div>
                         </div>
 
-                        <!-- Dynamic Services -->
                         <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
                             <div class="flex justify-between items-center mb-3">
                                 <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400">Services Requested</label>
@@ -211,7 +235,6 @@
                             </div>
                             
                             <div id="services-container" class="space-y-3">
-                                <!-- Default Row -->
                                 <div class="service-row bg-gray-50 dark:bg-gray-800 p-3 border border-gray-300 dark:border-gray-600 relative">
                                     <button type="button" onclick="removeServiceRow(this)" class="absolute top-0 right-0 w-6 h-6 bg-brand-600 text-white hover:bg-rose-600 flex items-center justify-center text-xs transition-colors" title="Delete Row"><i class="fa-solid fa-trash-can"></i></button>
                                     
@@ -227,13 +250,11 @@
                             </div>
                         </div>
 
-                        <!-- Required Documents (Editable) -->
                         <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
                             <label class="block text-xs font-semibold text-brand-600 dark:text-brand-400 mb-1">Required Documents (Editable)</label>
                             <textarea id="form_req_docs" rows="4" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark focus:border-brand-500 text-xs transition-colors outline-none" placeholder="Documents will auto-fill here based on service, or you can type them manually. Each line creates a bullet point." oninput="updatePreview()"></textarea>
                         </div>
 
-                        <!-- Notes Box -->
                         <div>
                             <label class="block text-xs font-semibold text-gray-600 dark:text-gray-400 mb-1">Remarks / Terms (Optional)</label>
                             <textarea id="form_notes" rows="2" class="block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-dark focus:border-brand-500 text-sm transition-colors outline-none" placeholder="Advance payment required..." oninput="updatePreview()">Advance payment required before processing.</textarea>
@@ -241,7 +262,6 @@
                     </div>
                 </div>
 
-                <!-- Action Buttons -->
                 <div class="grid grid-cols-2 gap-3">
                     <button onclick="downloadPDF()" class="w-full py-3 bg-brand-600 text-white text-sm font-bold hover:bg-brand-700 transition-colors flex items-center justify-center gap-2">
                         <i class="fa-solid fa-file-pdf"></i> Download PDF
@@ -255,121 +275,104 @@
                 </div>
             </div>
 
-            <!-- RIGHT: Live A4 Preview -->
             <div class="w-full lg:w-2/3 bg-gray-200 dark:bg-gray-800 p-4 sm:p-8 overflow-auto flex justify-center items-start border border-gray-300 dark:border-gray-700">
                 
-                <!-- The actual A4 Container that gets exported -->
                 <div id="estimate-document" class="a4-wrapper">
 
-                    <!-- Professional Header (Matching PI/Letterhead) -->
-                    <div style="border-bottom: 2px solid #10b981; padding-bottom: 15px; margin-bottom: 25px; display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 40px;">
                         <div>
-                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-                                <img src="assets/logo-app.png" alt="Logo" style="height: 38px; width: auto; object-fit: contain;" onerror="this.style.display='none'">
-                                <img src="assets/name.png" alt="CM Filings" style="height: 26px; width: auto; object-fit: contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
-                                <h1 style="display:none; color: #065f46; font-size: 32px; margin:0; font-weight: 700; letter-spacing: -0.5px;">CM Filings</h1>
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 12px;">
+                                <img src="assets/logo-app.png" alt="Logo" style="height: 48px; width: auto; object-fit: contain;" onerror="this.style.display='none'">
+                                <img src="assets/name.png" alt="CM Filings" style="height: 32px; width: auto; object-fit: contain;" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+                                <h1 style="display:none; color: #064e3b; font-size: 28px; margin:0; font-weight: 800;">CM Filings</h1>
                             </div>
-                            <p style="margin:4px 0 8px 0; color: #4b5563; font-size: 13px; font-weight: 500; letter-spacing: 0.5px;">Tax | Compliance | Innovation</p>
-                            
-                            <!-- Inline Professional Contact Details -->
-                            <div style="display: flex; align-items: center; gap: 12px; font-size: 12px; color: #4b5563; font-weight: 500;">
-                                <span><i class="fa-solid fa-phone" style="color: #10b981; margin-right: 4px;"></i>+91 99461 51111</span>
-                                <span style="color: #cbd5e1;">|</span>
-                                <span><i class="fa-solid fa-envelope" style="color: #10b981; margin-right: 4px;"></i>support@cmfilings.com</span>
-                                <span style="color: #cbd5e1;">|</span>
-                                <span><i class="fa-solid fa-globe" style="color: #10b981; margin-right: 4px;"></i>www.cmfilings.com</span>
-                            </div>
-                        </div>
-                        <div style="text-align: right;">
-                            <h2 style="font-size: 24px; color: #1f2937; margin:0 0 4px 0; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase;">ESTIMATE</h2>
-                            <div style="margin-top: 12px; background: #f9fafb; padding: 10px 16px; border: 1px solid #e5e7eb; display: inline-block; text-align: left;">
-                                <table style="font-size: 12px;">
-                                    <tr>
-                                        <td style="color: #6b7280; font-weight: 500; padding-right: 15px; padding-bottom: 4px;">No:</td>
-                                        <td style="color: #1f2937; font-weight: 600; font-family: monospace;" id="prev_no">EST...</td>
-                                    </tr>
-                                    <tr>
-                                        <td style="color: #6b7280; font-weight: 500; padding-right: 15px;">Date:</td>
-                                        <td style="color: #1f2937; font-weight: 600;" id="prev_date">DD/MMM/YYYY</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Billed To -->
-                    <div style="margin-bottom: 25px;">
-                        <h3 style="color: #10b981; font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; border-bottom: 1px solid #e5e7eb; padding-bottom: 4px; margin-bottom: 10px; display: inline-block;">Prepared For</h3>
-                        <p style="margin:0; font-weight: 600; font-size: 18px; color: #1f2937;" id="prev_client_name">Client Name</p>
-                        <p style="margin:4px 0 0; color:#6b7280; font-size: 13px; font-weight: 500;">Ph: <span id="prev_client_mobile" style="color: #374151;">-</span></p>
-                    </div>
-
-                    <!-- Table -->
-                    <div style="border: 1px solid #e2e8f0; margin-bottom: 25px;">
-                        <table class="est-table" style="margin: 0;">
-                            <thead>
-                                <tr style="background: #f8fafc; border-bottom: 1px solid #e2e8f0;">
-                                    <th style="border: none; background: transparent; color: #64748b; font-weight: 700; font-size: 11px;">Service Description</th>
-                                    <th style="border: none; background: transparent; color: #64748b; font-weight: 700; font-size: 11px; text-align: right; width: 150px;">Est. Amount</th>
-                                </tr>
-                            </thead>
-                            <tbody id="prev_tbody">
-                                <!-- Dynamic rows inject here -->
-                            </tbody>
-                            <tfoot>
-                                <tr style="background: #fafafa; border-top: 1px solid #e2e8f0;">
-                                    <td style="text-align: right; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;">Total Estimate</td>
-                                    <td style="text-align: right; font-weight: 700; font-size: 18px; color: #10b981;" id="prev_total">₹0.00</td>
-                                </tr>
-                            </tfoot>
-                        </table>
-                        <div style="background: white; padding: 10px 16px; border-top: 1px solid #e2e8f0; text-align: right;">
-                            <p style="margin:0; font-size: 11px; font-weight: 600; color: #64748b; font-style: italic;" id="prev_words">Rupees Zero Only</p>
-                        </div>
-                    </div>
-                    
-                    <!-- Required Documents -->
-                    <div id="prev_docs_container" style="margin-bottom: 20px; display: none;">
-                        <h4 style="margin:0 0 8px 0; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">
-                            <i class="fa-solid fa-folder-open" style="color: #10b981; margin-right: 4px;"></i> Required Documents
-                        </h4>
-                        <ul id="prev_docs_list" style="margin:0 0 0 15px; padding:0; font-size: 11px; color: #475569; line-height: 1.6; font-weight: 500;">
-                            <!-- Auto injected -->
-                        </ul>
-                    </div>
-
-                    <!-- Lower Section (Notes & QR) -->
-                    <div style="display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; margin-top: auto; padding-top: 20px;">
-                        <div style="flex: 1;">
-                            <!-- Notes -->
-                            <div id="prev_notes_container" style="margin-bottom: 15px; display: none;">
-                                <p style="margin:0 0 4px 0; font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px;">Remarks:</p>
-                                <div style="background: #fefbed; border: 1px solid #fef08a; padding: 10px; color: #475569; font-size: 11px; font-weight: 500;">
-                                    <p id="prev_notes" style="margin: 0; white-space: pre-wrap; line-height: 1.5;"></p>
-                                </div>
-                            </div>
-                            
-                            <!-- UPI Payment Text -->
-                            <div>
-                                <p style="margin:0 0 4px 0; font-size: 10px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px;">To Proceed (Pay Advance):</p>
-                                <p style="margin:0; font-size: 12px; font-weight: 500; color: #475569;">Scan QR or use UPI ID: <span id="prev_upi" style="font-weight: 600; color: #0f172a; background: #f1f5f9; padding: 2px 6px; border: 1px solid #e2e8f0;">-</span></p>
+                            <div style="font-size: 11px; color: #64748b; line-height: 1.6; font-weight: 500;">
+                                <p style="margin:0;">Tax | Compliance | Innovation</p>
+                                <p style="margin:0;">+91 99461 51111 &nbsp;|&nbsp; support@cmfilings.com</p>
+                                <p style="margin:0;">www.cmfilings.com</p>
                             </div>
                         </div>
                         
-                        <!-- QR Code Placeholder -->
-                        <div style="background: white; padding: 8px; border: 1px solid #e2e8f0; display: flex; flex-direction: column; items-center; justify-content: center; flex-shrink: 0;">
-                            <img src="qrcmeg.png" alt="UPI QR" style="height: 70px; width: 70px; object-fit: contain; mix-blend-mode: multiply;" onerror="this.style.display='none'; document.getElementById('qr-fallback').style.display='block';">
-                            <div id="qr-fallback" style="display:none; height: 70px; width: 70px; border: 1px dashed #cbd5e1; text-align: center; line-height: 70px; font-size: 10px; color: #94a3b8; font-weight: 600;">QR Code</div>
+                        <div style="text-align: right;">
+                            <h2 style="font-size: 32px; color: #0f172a; margin:0 0 15px 0; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase;">Estimate</h2>
+                            <table style="font-size: 11px; margin-left: auto; text-align: left;">
+                                <tr>
+                                    <td style="color: #64748b; font-weight: 600; padding: 4px 15px 4px 0; text-transform: uppercase; letter-spacing: 0.05em;">Estimate No.</td>
+                                    <td style="color: #0f172a; font-weight: 700; font-family: monospace; font-size: 12px;" id="prev_no">EST...</td>
+                                </tr>
+                                <tr>
+                                    <td style="color: #64748b; font-weight: 600; padding: 4px 15px 4px 0; text-transform: uppercase; letter-spacing: 0.05em;">Date</td>
+                                    <td style="color: #0f172a; font-weight: 700;" id="prev_date">DD/MMM/YYYY</td>
+                                </tr>
+                            </table>
                         </div>
                     </div>
+                    
+                    <div style="margin-bottom: 30px;">
+                        <h3 style="color: #94a3b8; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin: 0 0 8px 0;">Prepared For</h3>
+                        <p style="margin:0; font-weight: 700; font-size: 16px; color: #0f172a;" id="prev_client_name">Client Name</p>
+                        <p style="margin:4px 0 0; color:#64748b; font-size: 12px; font-weight: 500;">Ph: <span id="prev_client_mobile" style="color: #334155;">-</span></p>
+                    </div>
 
-                    <!-- Footer / Terms -->
-                    <div style="margin-top: 25px; padding-top: 15px; border-top: 1px solid #e2e8f0;">
-                        <h4 style="margin:0 0 4px 0; font-size: 9px; font-weight: 700; color: #9ca3af; text-transform: uppercase; letter-spacing: 1px;">Terms & Conditions</h4>
-                        <ul style="margin:0 0 0 15px; padding:0; font-size: 9px; color: #64748b; font-weight: 500; line-height: 1.4;">
-                            <li>This is an estimate. Final billing may vary based on actual government fees. Valid for 15 days.</li>
-                            <li>Work commences strictly upon receipt of advance payment and required documents.</li>
-                        </ul>
+                    <table class="est-table">
+                        <thead>
+                            <tr>
+                                <th>Service Description</th>
+                                <th style="text-align: right; width: 150px;">Est. Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="prev_tbody">
+                            </tbody>
+                        <tfoot>
+                            <tr>
+                                <td style="text-align: right; font-size: 11px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">Total Estimate</td>
+                                <td style="text-align: right; font-weight: 800; font-size: 22px; color: #10b981;" id="prev_total">₹0.00</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" style="text-align: right; font-size: 11px; font-weight: 600; color: #94a3b8; font-style: italic; padding-top: 4px;" id="prev_words">Rupees Zero Only</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                    
+                    <div style="display: grid; grid-template-columns: 1.5fr 1fr; gap: 30px; margin-top: 40px;">
+                        
+                        <div>
+                            <div id="prev_docs_container" style="margin-bottom: 25px; display: none;">
+                                <h4 style="margin:0 0 10px 0; font-size: 10px; font-weight: 700; color: #10b981; text-transform: uppercase; letter-spacing: 0.1em;">
+                                    Document Checklist
+                                </h4>
+                                <ul id="prev_docs_list" style="margin:0 0 0 16px; padding:0; font-size: 11px; color: #475569; line-height: 1.6; font-weight: 500;">
+                                    </ul>
+                            </div>
+
+                            <div id="prev_notes_container" style="display: none;">
+                                <h4 style="margin:0 0 8px 0; font-size: 10px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Remarks</h4>
+                                <p id="prev_notes" style="margin: 0; white-space: pre-wrap; font-size: 11px; color: #475569; line-height: 1.6; font-weight: 500;"></p>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 20px;">
+                            <div style="background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; display: flex; align-items: center; gap: 15px;">
+                                <img src="qrcmeg.png" alt="UPI QR" style="height: 60px; width: 60px; object-fit: contain; mix-blend-mode: multiply;" onerror="this.style.display='none'; document.getElementById('qr-fallback').style.display='block';">
+                                <div id="qr-fallback" style="display:none; height: 60px; width: 60px; border: 1px dashed #cbd5e1; text-align: center; line-height: 60px; font-size: 9px; color: #94a3b8;">QR</div>
+                                <div>
+                                    <p style="margin:0 0 4px 0; font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase; letter-spacing: 0.05em;">Scan & Pay Advance</p>
+                                    <p style="margin:0; font-size: 12px; font-weight: 700; color: #0f172a;" id="prev_upi">-</p>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 style="margin:0 0 6px 0; font-size: 9px; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.1em;">Terms & Conditions</h4>
+                                <p style="margin:0; font-size: 9px; color: #64748b; font-weight: 500; line-height: 1.5;">
+                                    This is an estimate, not a final invoice. Final billing may vary based on actual government fees. Valid for 15 days. Work commences upon receipt of advance payment and documents.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="pdf-footer">
+                        <span>By books.cmfilings.com</span>
+                        <span id="pdf-timestamp"></span>
                     </div>
                 </div>
 
@@ -377,7 +380,6 @@
         </main>
     </div>
 
-    <!-- Toast -->
     <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white px-6 py-3 text-sm font-bold z-[3000] transition-all duration-300 opacity-0 pointer-events-none border border-gray-700">Action Successful</div>
 
     <script>
@@ -562,6 +564,13 @@
 
         // --- Live Preview Sync Logic ---
         function updatePreview() {
+            // Update Timestamp Footer
+            const now = new Date();
+            document.getElementById('pdf-timestamp').innerText = now.toLocaleString('en-IN', { 
+                day: '2-digit', month: 'short', year: 'numeric', 
+                hour: '2-digit', minute: '2-digit', hour12: true 
+            });
+
             // Meta & Client
             document.getElementById('prev_no').innerText = document.getElementById('form_est_no').value || '-';
             document.getElementById('prev_date').innerText = document.getElementById('form_est_date').value || '-';
@@ -578,9 +587,9 @@
                 total += amt;
                 
                 tbodyHtml += `
-                <tr style="border-bottom: 1px solid #f1f5f9;">
-                    <td style="padding: 10px 16px; font-weight: 500; color: #374151; font-size: 13px;">${desc}</td>
-                    <td style="padding: 10px 16px; text-align: right; font-weight: 600; color: #1f2937; font-size: 13px;">₹${amt.toFixed(2)}</td>
+                <tr>
+                    <td>${desc}</td>
+                    <td style="text-align: right; font-weight: 600; color: #0f172a;">₹${amt.toFixed(2)}</td>
                 </tr>`;
             });
             document.getElementById('prev_tbody').innerHTML = tbodyHtml;
@@ -596,7 +605,7 @@
             
             if(docsVal !== "") {
                 const docsArray = docsVal.split('\n').filter(d => d.trim() !== '');
-                docsList.innerHTML = docsArray.map(d => `<li style="margin-bottom: 3px;">${d}</li>`).join('');
+                docsList.innerHTML = docsArray.map(d => `<li style="margin-bottom: 4px;">${d}</li>`).join('');
                 docsContainer.style.display = "block";
             } else {
                 docsContainer.style.display = "none";
@@ -615,6 +624,9 @@
 
         // --- Export & WhatsApp Logic ---
         function downloadPDF() {
+            // Trigger final UI update right before printing to ensure timestamp is to the exact minute.
+            updatePreview(); 
+            
             const element = document.getElementById('estimate-document');
             const estNo = document.getElementById('form_est_no').value || 'EST';
             const clientName = document.getElementById('form_client_name').value || 'Client';
@@ -622,12 +634,16 @@
             const opt = {
                 margin:       0, 
                 filename:     `${estNo}_${clientName.replace(/\s+/g, '_')}.pdf`,
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true },
+                image:        { type: 'jpeg', quality: 1 },
+                html2canvas:  { 
+                    scale: 4, 
+                    useCORS: true,
+                    letterRendering: true
+                },
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
 
-            showToast("Generating PDF...");
+            showToast("Generating High-Res PDF...");
             html2pdf().set(opt).from(element).save().then(() => {
                 showToast("PDF Downloaded!");
             });
