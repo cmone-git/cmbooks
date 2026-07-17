@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CM TaxHub</title>
+    <!-- CSS & Fonts (Assuming standard implementation from previous step) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="biometrics.js"></script>
+    
+    <style>
+        /* [Insert CSS from previous index.html iteration here. Includes variables, dark mode, nav, donuts, etc.] */
+        /* Additional Biometric Banner Style */
+        .bio-banner { background: #E0F2FE; border: 1px solid #BAE6FD; border-radius: 16px; padding: 16px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+        body.dark-mode .bio-banner { background: rgba(14, 165, 233, 0.1); border-color: rgba(14, 165, 233, 0.2); }
+        .bio-banner p { font-size: 0.85rem; font-weight: 600; margin: 0; color: #0369A1; }
+        body.dark-mode .bio-banner p { color: #38BDF8; }
+        .bio-banner button { background: #0284C7; color: white; border: none; padding: 8px 16px; border-radius: 10px; font-weight: 700; cursor: pointer; }
+    </style>
+</head>
+<body>
+
+    <!-- Header, Theme Toggle, Profile ... -->
+    
+    <main class="container">
+        
+        <!-- Welcome Message -->
+        <div class="welcome-section">
+            <h1 id="welcomeText">Welcome back! 👋</h1>
+        </div>
+
+        <!-- Biometric Registration Banner (Dynamic) -->
+        <div id="biometricBanner" class="bio-banner" style="display: none;">
+            <div>
+                <p>Enable Fast Login</p>
+                <span style="font-size: 0.7rem; color: inherit; opacity: 0.8;">Use FaceID/TouchID next time</span>
+            </div>
+            <button onclick="setupBiometrics()"><i data-lucide="fingerprint" style="width:16px; vertical-align: middle;"></i> Enable</button>
+        </div>
+
+        <!-- Dual Due Date Card (Individuals / Audit) ... [From previous HTML] -->
+
+        <!-- Dynamic History / Reflection Ledger -->
+        <div class="due-card" style="margin-bottom: 24px;">
+            <h3 style="font-size: 1.1rem; font-weight: 800; margin-bottom: 16px;"><i data-lucide="activity"></i> Filing History</h3>
+            <div id="historyLedgerContainer">
+                <p style="text-align: center; color: var(--text-muted); font-size: 0.85rem;">Syncing records...</p>
+            </div>
+        </div>
+
+        <!-- Quick Services Grid ... [From previous HTML] -->
+
+    </main>
+
+    <!-- Bottom Nav & Sidebar ... -->
+
+    <script>
+        lucide.createIcons();
+        const SCRIPT_URL = 'YOUR_GOOGLE_WEB_APP_URL_HERE';
+
+        // 1. Guard
+        if (localStorage.getItem('isLoggedIn') !== 'true') window.location.replace('login.html');
+
+        // 2. Personalize Welcome
+        const uName = localStorage.getItem('userName');
+        if (uName) document.getElementById('welcomeText').innerHTML = `Hi, ${uName.split(' ')[0]} 👋`;
+
+        // 3. Biometric Banner Check
+        if (localStorage.getItem('biometricsEnabled') !== 'true') {
+            document.getElementById('biometricBanner').style.display = 'flex';
+        }
+
+        async function setupBiometrics() {
+            const success = await registerBiometrics();
+            if (success) document.getElementById('biometricBanner').style.display = 'none';
+        }
+
+        // 4. Fetch & Reflect Dynamic Data from Sheet
+        async function pullClientLedger() {
+            const phone = localStorage.getItem('userPhone');
+            const email = localStorage.getItem('userEmail');
+            const wrapper = document.getElementById('historyLedgerContainer');
+            
+            try {
+                const res = await fetch(SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'get_client_data', phone: phone, email: email }),
+                    headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+                });
+                const data = await res.json();
+
+                if (data.status === 'success' && data.records.length > 0) {
+                    wrapper.innerHTML = ''; 
+                    data.records.forEach(entry => {
+                        let color = entry.status === 'Completed' ? '#10B981' : (entry.status === 'Action Required' ? '#EF4444' : '#F59E0B');
+                        let invoiceBtn = entry.invoice ? `<a href="${entry.invoice}" style="background:#374151; color:#fff; padding:6px 12px; border-radius:8px; font-size:0.75rem; text-decoration:none;">Invoice</a>` : '';
+                        
+                        wrapper.innerHTML += `
+                            <div style="background:var(--bg-main); border:1px solid var(--border-color); padding:12px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                                <div>
+                                    <strong style="display:block; font-size:0.95rem;">FY ${entry.year || '2025'} - ${entry.appNo}</strong>
+                                    <span style="font-size:0.8rem; font-weight:700; color:${color};">● ${entry.status}</span>
+                                </div>
+                                <div>${invoiceBtn}</div>
+                            </div>
+                        `;
+                    });
+                } else {
+                    wrapper.innerHTML = `<p style="font-size: 0.85rem; color: var(--text-muted); text-align: center;">No previous filings found.</p>`;
+                }
+            } catch (err) {
+                wrapper.innerHTML = `<p style="font-size: 0.85rem; color: var(--danger-red); text-align: center;">Failed to sync data.</p>`;
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', pullClientLedger);
+    </script>
+</body>
+</html>
