@@ -91,18 +91,19 @@
         .page-title p { font-size: 0.95rem; color: var(--text-muted); font-weight: 500; }
 
         /* Services Categories Section */
-        .category-section { margin-bottom: 32px; }
+        .category-section { margin-bottom: 36px; }
         .category-header { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; padding-left: 4px; }
         .category-header i { color: var(--primary-blue); width: 24px; height: 24px; }
         .category-header h2 { font-size: 1.15rem; font-weight: 700; color: var(--text-dark); text-transform: uppercase; letter-spacing: 0.5px; }
 
-        /* List Cards for Services */
-        .service-list { display: flex; flex-direction: column; gap: 12px; }
-        .service-list-item { background: var(--card-bg); border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; gap: 16px; border: 1px solid var(--border-color); box-shadow: 0 2px 10px var(--shadow-color); text-decoration: none; transition: transform 0.1s, box-shadow 0.2s; cursor: pointer; }
-        .service-list-item:active { transform: scale(0.98); }
+        /* KPI Style 3-Column Grid */
+        .kpi-services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
         
-        .svc-icon { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-        .svc-icon i { width: 22px; height: 22px; }
+        .kpi-card { background: var(--card-bg); border-radius: 16px; padding: 18px 8px; text-decoration: none; display: flex; flex-direction: column; align-items: center; text-align: center; border: 1px solid var(--border-color); box-shadow: 0 4px 12px var(--shadow-color); transition: transform 0.1s; min-height: 125px; }
+        .kpi-card:active { transform: scale(0.96); }
+        
+        .kpi-icon { width: 44px; height: 44px; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; flex-shrink: 0; }
+        .kpi-icon i { width: 22px; height: 22px; }
         
         /* Utility Classes for Icon Colors */
         .bg-blue { background: var(--icon-blue-bg); color: var(--icon-blue-text); }
@@ -112,10 +113,8 @@
         .bg-red { background: var(--icon-red-bg); color: var(--icon-red-text); }
         .bg-grey { background: var(--icon-grey-bg); color: var(--icon-grey-text); }
 
-        .svc-text { flex-grow: 1; }
-        .svc-text h4 { font-size: 0.95rem; font-weight: 700; color: var(--text-dark); line-height: 1.3; }
-        
-        .svc-chevron { color: var(--text-muted); opacity: 0.5; width: 20px; height: 20px; }
+        /* Text adjusting for tiny 3-col mobile view */
+        .kpi-card h4 { font-size: 0.72rem; font-weight: 700; color: var(--text-dark); line-height: 1.35; margin: 0; word-wrap: break-word; overflow-wrap: anywhere; }
 
         /* Bottom Nav (Reduced Height) */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: var(--nav-bg); border-top: 1px solid var(--border-color); display: flex; justify-content: space-around; padding: 8px 0 12px 0; z-index: 100; box-shadow: 0 -4px 20px rgba(0,0,0,0.03); transition: background-color 0.3s; }
@@ -206,41 +205,35 @@
                 <h2>Income Tax</h2>
             </div>
             
-            <div class="service-list">
-                <a href="form.html" class="service-list-item">
-                    <div class="svc-icon bg-blue"><i data-lucide="file-text"></i></div>
-                    <div class="svc-text"><h4>Return Filing</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+            <div class="kpi-services-grid">
+                <a href="form.html" class="kpi-card">
+                    <div class="kpi-icon bg-blue"><i data-lucide="file-text"></i></div>
+                    <h4>Return Filing</h4>
                 </a>
                 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-red"><i data-lucide="mail-warning"></i></div>
-                    <div class="svc-text"><h4>Response to Notices & Outstanding Demand</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-red"><i data-lucide="mail-warning"></i></div>
+                    <h4>Responce to Notices & Outstanding Demand</h4>
                 </a>
 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-purple"><i data-lucide="search"></i></div>
-                    <div class="svc-text"><h4>IT Audit and Scrutiny Related</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-purple"><i data-lucide="search"></i></div>
+                    <h4>IT Audit and Scrutiny Related</h4>
                 </a>
 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-green"><i data-lucide="hash"></i></div>
-                    <div class="svc-text"><h4>TAN Registration</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-green"><i data-lucide="hash"></i></div>
+                    <h4>TAN Registration</h4>
                 </a>
 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-yellow"><i data-lucide="file-spreadsheet"></i></div>
-                    <div class="svc-text"><h4>TDS Return</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-yellow"><i data-lucide="file-spreadsheet"></i></div>
+                    <h4>TDS Return</h4>
                 </a>
 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-grey"><i data-lucide="more-horizontal"></i></div>
-                    <div class="svc-text"><h4>Others</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-grey"><i data-lucide="more-horizontal"></i></div>
+                    <h4>Others</h4>
                 </a>
             </div>
         </div>
@@ -249,50 +242,43 @@
         <div class="category-section">
             <div class="category-header">
                 <i data-lucide="calculator"></i>
-                <h2>GST (Goods & Services Tax)</h2>
+                <h2>GST</h2>
             </div>
             
-            <div class="service-list">
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-blue"><i data-lucide="clipboard-list"></i></div>
-                    <div class="svc-text"><h4>GST Registrations</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+            <div class="kpi-services-grid">
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-blue"><i data-lucide="clipboard-list"></i></div>
+                    <h4>GST Registrations</h4>
                 </a>
                 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-green"><i data-lucide="file-clock"></i></div>
-                    <div class="svc-text"><h4>Returns</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-green"><i data-lucide="file-clock"></i></div>
+                    <h4>Returns</h4>
                 </a>
 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-yellow"><i data-lucide="calendar-check"></i></div>
-                    <div class="svc-text"><h4>Annual Return</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-yellow"><i data-lucide="calendar-check"></i></div>
+                    <h4>Annual Return</h4>
                 </a>
 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-purple"><i data-lucide="send"></i></div>
-                    <div class="svc-text"><h4>LUT Submission</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-purple"><i data-lucide="send"></i></div>
+                    <h4>LUT Submission</h4>
                 </a>
 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-red"><i data-lucide="file-digit"></i></div>
-                    <div class="svc-text"><h4>Form DRC Submissions</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-red"><i data-lucide="file-digit"></i></div>
+                    <h4>Form DRC Submissions</h4>
                 </a>
                 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-blue"><i data-lucide="file-search"></i></div>
-                    <div class="svc-text"><h4>GST Audit and Scrutiny Related</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-blue"><i data-lucide="file-search"></i></div>
+                    <h4>GST Audit and Scrutiny Related</h4>
                 </a>
 
-                <a href="upload.html" class="service-list-item">
-                    <div class="svc-icon bg-grey"><i data-lucide="more-horizontal"></i></div>
-                    <div class="svc-text"><h4>Others</h4></div>
-                    <i data-lucide="chevron-right" class="svc-chevron"></i>
+                <a href="upload.html" class="kpi-card">
+                    <div class="kpi-icon bg-grey"><i data-lucide="more-horizontal"></i></div>
+                    <h4>Others</h4>
                 </a>
             </div>
         </div>
