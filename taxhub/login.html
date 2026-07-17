@@ -14,7 +14,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 
     <style>
-        /* ... [Include the same CSS variables and styling from the previous login page] ... */
         :root { --primary-blue: #003366; --bg-main: #F4F6F8; --card-bg: #FFFFFF; --text-dark: #111827; --border-color: rgba(0,0,0,0.06); }
         body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
         .login-card { background: var(--card-bg); padding: 40px 30px; border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); width: 100%; max-width: 420px; text-align: center; border: 1px solid var(--border-color); }
@@ -22,13 +21,15 @@
         .btn-bio { background: #10B981; }
         .divider { display: flex; align-items: center; margin: 20px 0; color: #6B7280; font-size: 0.8rem; font-weight: 600; }
         .divider::before, .divider::after { content: ""; flex: 1; border-bottom: 1px solid var(--border-color); margin: 0 10px; }
-        .input-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 12px; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 12px; box-sizing: border-box; }
+        .google-btn-wrapper { display: flex; justify-content: center; margin-bottom: 16px; }
     </style>
 </head>
 <body>
 
     <div class="login-card">
-        <img src="assets/logo-name.png" alt="CM TaxHub" style="height: 40px; margin-bottom: 20px;">
+        <!-- FIXED Path to ensure your logo shows up -->
+        <img src="assets/logo-name.png" alt="CM TaxHub" style="height: 40px; margin-bottom: 20px;" onerror="this.style.display='none'">
         <h2 style="margin-bottom: 6px; font-weight: 800;">Secure Login</h2>
         <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 24px;">Access your corporate filing dashboard.</p>
 
@@ -37,21 +38,26 @@
             <i data-lucide="fingerprint"></i> Sign In with Biometrics
         </button>
 
-        <!-- Google Sign In -->
+        <!-- Google Configuration Container -->
         <div id="g_id_onload"
-     data-client_id="294144253040-v2l17rbvq3t11ngu7c5bsemvlg4780oj.apps.googleusercontent.com"
-     data-context="signin"
-     data-ux_mode="popup"
-     data-callback="handleCredentialResponse"
-     data-auto_prompt="false">
-</div>
+             data-client_id="294144253040-v2l17rbvq3t11ngu7c5bsemvlg4780oj.apps.googleusercontent.com"
+             data-context="signin"
+             data-ux_mode="popup"
+             data-callback="handleGoogleLogin"
+             data-auto_prompt="false">
+        </div>
+
+        <!-- FIXED: The explicit button visual marker for Google layout rendering -->
+        <div class="google-btn-wrapper">
+            <div class="g_id_signin" data-type="standard" data-shape="semibold" data-theme="outline" data-size="large" data-logo_alignment="left"></div>
+        </div>
 
         <div class="divider">OR USE MOBILE</div>
 
         <!-- Firebase OTP Section -->
         <div id="phoneSection">
             <div class="input-group">
-                <input type="tel" id="phoneNumber" placeholder="+91 9946151111">
+                <input type="tel" id="phoneNumber" placeholder="+91 9895470148">
             </div>
             <div id="recaptcha-container" style="display: flex; justify-content: center; margin-bottom: 10px;"></div>
             <button class="btn-action" id="sendOtpBtn"><i data-lucide="message-square"></i> Send OTP</button>
@@ -74,7 +80,6 @@
             const bioBtn = document.getElementById('btnBiometricLogin');
             bioBtn.style.display = 'flex';
             bioBtn.addEventListener('click', authenticateWithBiometrics);
-            // Optionally, trigger automatically: authenticateWithBiometrics();
         }
 
         // 2. Google Login Handler
@@ -88,22 +93,38 @@
             logSessionAndRedirect(payload.email, 'Google');
         }
 
-        // 3. Firebase Mobile Setup
-        firebase.initializeApp({
-            apiKey: "YOUR_FIREBASE_API_KEY",
+        // 3. FIXED: Populated actual keys extracted from your dynamic console profile panel
+        const firebaseConfig = {
+            apiKey: "AIzaSyAY0eJ0iAVxP2tn2RLe7wVNB8Q15Vnjd-g",
             authDomain: "cmb-40001.firebaseapp.com",
-            projectId: "cmb-40001"
-        });
+            projectId: "cmb-40001",
+            storageBucket: "cmb-40001.firebasestorage.app",
+            messagingSenderId: "294144253040",
+            appId: "1:294144253040:web:852b7c378ee8049f4268b5",
+            measurementId: "G-RX05KNR8Y3"
+        };
+        firebase.initializeApp(firebaseConfig);
+        
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'normal' });
 
         document.getElementById('sendOtpBtn').addEventListener('click', () => {
-            const phone = document.getElementById('phoneNumber').value;
+            // FIXED: Automatically strips all whitespace characters from user string entry
+            let phone = document.getElementById('phoneNumber').value.trim().replace(/\s+/g, '');
+            
+            if(!phone.startsWith('+')) {
+                alert("Please explicitly enter a country code (e.g., +91).");
+                return;
+            }
+
             firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)
                 .then((res) => {
                     window.confirmationResult = res;
                     document.getElementById('phoneSection').style.display = 'none';
                     document.getElementById('otpSection').style.display = 'block';
-                }).catch(err => alert("Error sending OTP."));
+                }).catch(err => {
+                    console.error(err);
+                    alert("Error sending OTP. Ensure string format matches precisely.");
+                });
         });
 
         document.getElementById('verifyOtpBtn').addEventListener('click', () => {
