@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign In - CM TaxHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- External Scripts -->
+    <script src="biometrics.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+
+    <style>
+        /* ... [Include the same CSS variables and styling from the previous login page] ... */
+        :root { --primary-blue: #003366; --bg-main: #F4F6F8; --card-bg: #FFFFFF; --text-dark: #111827; --border-color: rgba(0,0,0,0.06); }
+        body { font-family: 'Inter', sans-serif; background: var(--bg-main); color: var(--text-dark); display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .login-card { background: var(--card-bg); padding: 40px 30px; border-radius: 24px; box-shadow: 0 8px 32px rgba(0,0,0,0.08); width: 100%; max-width: 420px; text-align: center; border: 1px solid var(--border-color); }
+        .btn-action { width: 100%; padding: 14px; background: #374151; color: white; border: none; border-radius: 12px; font-weight: 700; font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 12px; }
+        .btn-bio { background: #10B981; }
+        .divider { display: flex; align-items: center; margin: 20px 0; color: #6B7280; font-size: 0.8rem; font-weight: 600; }
+        .divider::before, .divider::after { content: ""; flex: 1; border-bottom: 1px solid var(--border-color); margin: 0 10px; }
+        .input-group input { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="login-card">
+        <img src="assets/logo-name.png" alt="CM TaxHub" style="height: 40px; margin-bottom: 20px;">
+        <h2 style="margin-bottom: 6px; font-weight: 800;">Secure Login</h2>
+        <p style="color: #6B7280; font-size: 0.9rem; margin-bottom: 24px;">Access your corporate filing dashboard.</p>
+
+        <!-- Biometric Quick Login (Hidden by default) -->
+        <button id="btnBiometricLogin" class="btn-action btn-bio" style="display: none;">
+            <i data-lucide="fingerprint"></i> Sign In with Biometrics
+        </button>
+
+        <!-- Google Sign In -->
+        <div id="g_id_onload"
+             data-client_id="YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+             data-context="signin" data-callback="handleGoogleLogin" data-auto_prompt="false"></div>
+        <div class="g_id_signin" data-type="standard" data-size="large" data-theme="outline" data-width="360" style="margin-bottom: 12px; display: flex; justify-content: center;"></div>
+
+        <div class="divider">OR USE MOBILE</div>
+
+        <!-- Firebase OTP Section -->
+        <div id="phoneSection">
+            <div class="input-group">
+                <input type="tel" id="phoneNumber" placeholder="+91 9946151111">
+            </div>
+            <div id="recaptcha-container" style="display: flex; justify-content: center; margin-bottom: 10px;"></div>
+            <button class="btn-action" id="sendOtpBtn"><i data-lucide="message-square"></i> Send OTP</button>
+        </div>
+
+        <div id="otpSection" style="display: none;">
+            <div class="input-group">
+                <input type="number" id="otpCode" placeholder="Enter 6-digit code">
+            </div>
+            <button class="btn-action" id="verifyOtpBtn"><i data-lucide="shield-check"></i> Verify</button>
+        </div>
+    </div>
+
+    <script>
+        lucide.createIcons();
+        const SCRIPT_URL = 'YOUR_GOOGLE_WEB_APP_URL_HERE';
+
+        // 1. Biometric Auto-Prompt Setup
+        if (localStorage.getItem('biometricsEnabled') === 'true') {
+            const bioBtn = document.getElementById('btnBiometricLogin');
+            bioBtn.style.display = 'flex';
+            bioBtn.addEventListener('click', authenticateWithBiometrics);
+            // Optionally, trigger automatically: authenticateWithBiometrics();
+        }
+
+        // 2. Google Login Handler
+        function decodeJwt(token) {
+            return JSON.parse(decodeURIComponent(atob(token.split('.')[1]).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+        }
+        function handleGoogleLogin(response) {
+            const payload = decodeJwt(response.credential);
+            localStorage.setItem('userEmail', payload.email);
+            localStorage.setItem('userName', payload.name);
+            logSessionAndRedirect(payload.email, 'Google');
+        }
+
+        // 3. Firebase Mobile Setup
+        firebase.initializeApp({
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "cmb-40001.firebaseapp.com",
+            projectId: "cmb-40001"
+        });
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { 'size': 'normal' });
+
+        document.getElementById('sendOtpBtn').addEventListener('click', () => {
+            const phone = document.getElementById('phoneNumber').value;
+            firebase.auth().signInWithPhoneNumber(phone, window.recaptchaVerifier)
+                .then((res) => {
+                    window.confirmationResult = res;
+                    document.getElementById('phoneSection').style.display = 'none';
+                    document.getElementById('otpSection').style.display = 'block';
+                }).catch(err => alert("Error sending OTP."));
+        });
+
+        document.getElementById('verifyOtpBtn').addEventListener('click', () => {
+            const code = document.getElementById('otpCode').value;
+            confirmationResult.confirm(code).then((result) => {
+                localStorage.setItem('userPhone', result.user.phoneNumber);
+                logSessionAndRedirect(result.user.phoneNumber, 'Phone_OTP');
+            }).catch(err => alert("Invalid OTP"));
+        });
+
+        // 4. Record to Sheet & Redirect
+        function logSessionAndRedirect(identifier, method) {
+            localStorage.setItem('isLoggedIn', 'true');
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'record_login', email: identifier, method: method }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            }).finally(() => window.location.href = 'index.html');
+        }
+    </script>
+</body>
+</html>
